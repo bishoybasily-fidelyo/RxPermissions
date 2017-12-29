@@ -33,8 +33,7 @@ class PermissionsRequester {
         }
 
         open fun missingPermissions(permissions: Array<String>): Array<String> {
-            val missingPermissions = permissions.filter { isMissing(activity, it) }.toTypedArray()
-            return missingPermissions
+            return permissions.filter { isMissing(activity, it) }.toTypedArray()
         }
 
         open class ExplainedRequester(activity: Activity,
@@ -52,9 +51,11 @@ class PermissionsRequester {
                                 .setTitle(title)
                                 .setMessage(message)
                                 .setPositiveButton(positive) { dialog, whichButton ->
+                                    dialog.dismiss()
                                     getFragment(activity).requestPermissions(emitter, missingPermissions)
                                 }
                                 .setNegativeButton(negative) { dialog, which ->
+                                    dialog.dismiss()
                                     emitter.onNext(false)
                                     emitter.onComplete()
                                 }
