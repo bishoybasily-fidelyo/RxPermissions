@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PermissionsRequester</string>
+    <string name="action_settings">Settings</string>
+    <string name="title">Missing permission</string>
+    <string name="message">I need to access the following permissions in order to do some important stuff for you.</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+</resources>
