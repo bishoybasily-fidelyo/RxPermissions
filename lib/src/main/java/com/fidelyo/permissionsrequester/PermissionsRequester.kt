@@ -84,7 +84,7 @@ class PermissionsRequester {
                         .commitAllowingStateLoss()
                 fragmentManager.executePendingTransactions()
             }
-            return (fragment as PermissionsRequesterFragment)
+            return fragment as PermissionsRequesterFragment
         }
 
     }
