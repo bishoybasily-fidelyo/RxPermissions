@@ -37,6 +37,7 @@ class PermissionsRequester {
             return missingPermissions
         }
 
+
         open class ExplainedRequester(activity: Activity,
                                       val title: Int,
                                       val message: Int,
