@@ -14,6 +14,8 @@ class PermissionsRequester {
 
     open class Requester(val activity: Activity) {
 
+        val TAG = javaClass.simpleName
+
         open fun explain(title: Int,
                          message: Int,
                          positive: Int,
@@ -27,7 +29,7 @@ class PermissionsRequester {
                 Observable.just(true)
             } else {
                 Observable.create { emitter ->
-                    getFragment(activity).requestPermissions(emitter, missingPermissions)
+                    getFragment(activity).setEmitter(emitter).request(missingPermissions, CODE)
                 }
             }
         }
@@ -41,6 +43,7 @@ class PermissionsRequester {
                                       val message: Int,
                                       val positive: Int,
                                       val negative: Int) : Requester(activity) {
+
             override fun request(permissions: Array<String>): Observable<Boolean> {
                 val missingPermissions = missingPermissions(permissions)
                 return if (missingPermissions.isEmpty()) {
@@ -52,7 +55,7 @@ class PermissionsRequester {
                                 .setMessage(message)
                                 .setPositiveButton(positive) { dialog, whichButton ->
                                     dialog.dismiss()
-                                    getFragment(activity).requestPermissions(emitter, missingPermissions)
+                                    getFragment(activity).setEmitter(emitter).request(missingPermissions, CODE)
                                 }
                                 .setNegativeButton(negative) { dialog, which ->
                                     dialog.dismiss()
@@ -75,17 +78,23 @@ class PermissionsRequester {
 
         fun getFragment(activity: Activity): PermissionsRequesterFragment {
             val fragmentManager = activity.fragmentManager
-            var fragment = fragmentManager.findFragmentByTag(PermissionsRequesterFragment.TAG)
+            var fragment = fragmentManager.findFragmentByTag(TAG)
             if (fragment == null) {
                 fragment = PermissionsRequesterFragment()
                 fragmentManager
                         .beginTransaction()
-                        .add(fragment, PermissionsRequesterFragment.TAG)
+                        .add(fragment, TAG)
                         .commitAllowingStateLoss()
                 fragmentManager.executePendingTransactions()
             }
             return fragment as PermissionsRequesterFragment
         }
+
+    }
+
+    companion object {
+
+        val CODE = 42
 
     }
 

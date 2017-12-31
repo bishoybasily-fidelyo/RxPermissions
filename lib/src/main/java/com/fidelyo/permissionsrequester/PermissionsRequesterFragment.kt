@@ -16,16 +16,21 @@ class PermissionsRequesterFragment : Fragment() {
         retainInstance = true
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    fun requestPermissions(e: ObservableEmitter<Boolean>, permissions: Array<String>) {
-        emitter = e; requestPermissions(permissions, CODE)
+    fun setEmitter(emitter: ObservableEmitter<Boolean>): PermissionsRequesterFragment {
+        this.emitter = emitter
+        return this
     }
 
+
     @TargetApi(Build.VERSION_CODES.M)
+    fun request(permissions: Array<String>, requestCode: Int) {
+        requestPermissions(permissions, requestCode)
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (requestCode != CODE) return
+        if (requestCode != PermissionsRequester.CODE) return
 
         emitter?.onNext(checkResults(grantResults))
         emitter?.onComplete()
@@ -37,14 +42,6 @@ class PermissionsRequesterFragment : Fragment() {
             if (re != PackageManager.PERMISSION_GRANTED)
                 return false
         return true
-    }
-
-    companion object {
-
-        val TAG = javaClass.simpleName
-
-        private val CODE = 42
-
     }
 
 
