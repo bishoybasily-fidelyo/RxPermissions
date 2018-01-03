@@ -34,6 +34,10 @@ class PermissionsRequester {
             }
         }
 
+        open fun ensure(permissions: Array<String>): Observable<Boolean> {
+            return Observable.just(missingPermissions(permissions).isEmpty())
+        }
+
         open fun missingPermissions(permissions: Array<String>): Array<String> {
             return permissions.filter { isMissing(activity, it) }.toTypedArray()
         }
@@ -70,6 +74,7 @@ class PermissionsRequester {
             }
         }
 
+
         fun isMissing(activity: Activity, permission: String): Boolean {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 activity.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED
@@ -90,7 +95,9 @@ class PermissionsRequester {
             return fragment as PermissionsRequesterFragment
         }
 
+
     }
+
 
     companion object {
 

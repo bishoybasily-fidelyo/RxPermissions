@@ -16,11 +16,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        val req = PermissionsRequester().with(this)
+
+        val needed = arrayOf(Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION)
+
+        req.ensure(needed).subscribe { fab.isEnabled = !it }
+
         fab.setOnClickListener { view ->
 
-            PermissionsRequester().with(this@MainActivity)
+            req
 //                    .explain(R.string.title, R.string.message, R.string.allow, R.string.deny)
-                    .request(arrayOf(Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION))
+                    .request(needed)
                     .subscribe { Log.i("@@", "$it") }
 
 
