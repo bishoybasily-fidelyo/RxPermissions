@@ -1,4 +1,4 @@
-# STOMP protocol for android
+# Permissions requester for android
 
 [![](https://jitpack.io/v/bishoybasily-fidelyo/permissions-requester.svg)](https://jitpack.io/#bishoybasily-fidelyo/permissions-requester)
 
