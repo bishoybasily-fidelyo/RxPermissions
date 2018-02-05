@@ -22,15 +22,6 @@ This library allows the usage of RxJava with the new Android M permission model.
 
 **Full example**
 ``` kotlin
-import com.fidelyo.stomp.Event
-import com.fidelyo.stomp.Stomp
-import io.reactivex.ObservableTransformer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import okhttp3.OkHttpClient
-
- //...
 
 val requester = PermissionsRequester().with(this)
 val needed = arrayOf(Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION)
