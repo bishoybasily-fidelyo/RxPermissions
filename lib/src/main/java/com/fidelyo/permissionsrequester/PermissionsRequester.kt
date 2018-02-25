@@ -9,12 +9,12 @@ import io.reactivex.Observable
 
 class PermissionsRequester {
 
-    fun with(activity: Activity): ActivityHandler {
-        return ActivityHandler(activity)
+    fun with(context: Context): Handler {
+        return Handler(context)
     }
 
-    fun with(context: Context): ContextHandler {
-        return ContextHandler(context)
+    fun with(activity: Activity): ActivityHandler {
+        return ActivityHandler(activity)
     }
 
     open class Handler(val context: Context) {
@@ -34,8 +34,6 @@ class PermissionsRequester {
         }
 
     }
-
-    open class ContextHandler(context: Context) : Handler(context)
 
     open class ActivityHandler(val activity: Activity) : Handler(activity) {
 
@@ -58,7 +56,6 @@ class PermissionsRequester {
                 }
             }
         }
-
 
         fun getFragment(activity: Activity): PermissionsRequesterFragment {
             val fragmentManager = activity.fragmentManager

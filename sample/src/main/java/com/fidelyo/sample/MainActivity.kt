@@ -1,7 +1,6 @@
 package com.fidelyo.sample
 
 import android.Manifest
-import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -15,8 +14,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-        val context: Context = this
 
         val requester = PermissionsRequester().with(this)
         val needed = arrayOf(Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -39,7 +36,6 @@ class MainActivity : AppCompatActivity() {
 
         // please note neither the explanation dialog nor the permission dialog will be prompted if the permission already granted,
         // it means you can safely call request even if the permission already granted
-
         fab.setOnClickListener { view ->
 
         }
