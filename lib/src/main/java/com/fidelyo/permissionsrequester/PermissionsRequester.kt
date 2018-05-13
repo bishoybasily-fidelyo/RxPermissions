@@ -84,18 +84,18 @@ class PermissionsRequester {
             return if (missingPermissions.isEmpty()) {
                 Observable.just(true)
             } else {
-                return Observable.create { emitter ->
+                return Observable.create {
                     AlertDialog.Builder(activity)
                             .setTitle(title)
                             .setMessage(message)
-                            .setPositiveButton(positive) { dialog, whichButton ->
+                            .setPositiveButton(positive) { dialog, _ ->
                                 dialog.dismiss()
-                                getFragment(activity).setEmitter(emitter).request(missingPermissions, CODE)
+                                getFragment(activity).setEmitter(it).request(missingPermissions, CODE)
                             }
-                            .setNegativeButton(negative) { dialog, which ->
+                            .setNegativeButton(negative) { dialog, _ ->
                                 dialog.dismiss()
-                                emitter.onNext(false)
-                                emitter.onComplete()
+                                it.onNext(false)
+                                it.onComplete()
                             }
                             .create()
                             .show()
