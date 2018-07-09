@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
                 .explain(R.string.title, R.string.message, R.string.allow, R.string.deny) // explanation dialog
                 .request(needed) // needed permissions
                 .subscribe {
-
                     if (it) {
                         // permission granted
                     } else {
