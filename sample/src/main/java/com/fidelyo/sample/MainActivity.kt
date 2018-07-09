@@ -12,7 +12,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -20,20 +19,20 @@ class MainActivity : AppCompatActivity() {
         val needed = arrayOf(Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION)
 
         // to ensure that the permission is granted without requesting
-        requester.ensure(needed).subscribe({ fab.isEnabled = it }, {})
+        requester.ensure(needed).subscribe { fab.isEnabled = it }
 
         // to request the permission
         requester
                 .explain(R.string.title, R.string.message, R.string.allow, R.string.deny) // explanation dialog
                 .request(needed) // needed permissions
-                .subscribe({
+                .subscribe {
 
                     if (it) {
                         // permission granted
                     } else {
                         // permission not granted
                     }
-                }, {}) // callback
+                } // callback
 
         // please note neither the explanation dialog nor the permission dialog will be prompted if the permission already granted,
         // it means you can safely call request even if the permission already granted

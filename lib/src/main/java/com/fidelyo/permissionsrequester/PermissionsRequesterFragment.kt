@@ -5,18 +5,18 @@ import android.app.Fragment
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import io.reactivex.SingleEmitter
+import io.reactivex.ObservableEmitter
 
 class PermissionsRequesterFragment : Fragment() {
 
-    private var emitter: SingleEmitter<Boolean>? = null
+    private var emitter: ObservableEmitter<Boolean>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
     }
 
-    fun setEmitter(emitter: SingleEmitter<Boolean>): PermissionsRequesterFragment {
+    fun setEmitter(emitter: ObservableEmitter<Boolean>): PermissionsRequesterFragment {
         this.emitter = emitter
         return this
     }
@@ -32,7 +32,8 @@ class PermissionsRequesterFragment : Fragment() {
 
         if (requestCode != PermissionsRequester.CODE) return
 
-        emitter?.onSuccess(checkResults(grantResults))
+        emitter?.onNext(checkResults(grantResults))
+        emitter?.onComplete()
 
     }
 

@@ -5,7 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import io.reactivex.Single
+import io.reactivex.Observable
 
 class PermissionsRequester {
 
@@ -29,8 +29,8 @@ class PermissionsRequester {
             return permissions.filter { isMissing(context, it) }.toTypedArray()
         }
 
-        open fun ensure(permissions: Array<String>): Single<Boolean> {
-            return Single.just(missingPermissions(permissions).isEmpty())
+        open fun ensure(permissions: Array<String>): Observable<Boolean> {
+            return Observable.just(missingPermissions(permissions).isEmpty())
         }
 
     }
@@ -46,12 +46,12 @@ class PermissionsRequester {
             return ExplainedActivityHandler(activity, title, message, positive, negative)
         }
 
-        open fun request(permissions: Array<String>): Single<Boolean> {
+        open fun request(permissions: Array<String>): Observable<Boolean> {
             val missingPermissions = missingPermissions(permissions)
             return if (missingPermissions.isEmpty()) {
-                Single.just(true)
+                Observable.just(true)
             } else {
-                Single.create { getFragment(activity).setEmitter(it).request(missingPermissions, CODE) }
+                Observable.create { getFragment(activity).setEmitter(it).request(missingPermissions, CODE) }
             }
         }
 
@@ -77,12 +77,12 @@ class PermissionsRequester {
                                         val positive: Int,
                                         val negative: Int) : ActivityHandler(activity) {
 
-        override fun request(permissions: Array<String>): Single<Boolean> {
+        override fun request(permissions: Array<String>): Observable<Boolean> {
             val missingPermissions = missingPermissions(permissions)
             return if (missingPermissions.isEmpty()) {
-                Single.just(true)
+                Observable.just(true)
             } else {
-                return Single.create {
+                return Observable.create {
                     AlertDialog.Builder(activity)
                             .setTitle(title)
                             .setMessage(message)
@@ -92,7 +92,8 @@ class PermissionsRequester {
                             }
                             .setNegativeButton(negative) { dialog, _ ->
                                 dialog.dismiss()
-                                it.onSuccess(false)
+                                it.onNext(false)
+                                it.onComplete()
                             }
                             .create()
                             .show()
