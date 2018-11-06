@@ -1,10 +1,10 @@
 # Permissions requester for android
 
-[![](https://jitpack.io/v/bishoybasily-fidelyo/permissions-requester.svg)](https://jitpack.io/#bishoybasily-fidelyo/permissions-requester)
+[![](https://jitpack.io/v/bishoybasily/permissions-requester.svg)](https://jitpack.io/#bishoybasily/permissions-requester)
 
 ## Overview
 
-This library allows the usage of RxJava with the new Android M permission model.`
+This library allows you to request the required android permissions using RxJava.
 
 ## Setup
     repositories {
@@ -14,7 +14,7 @@ This library allows the usage of RxJava with the new Android M permission model.
 
     dependencies {
 
-        implementation 'com.github.bishoybasily-fidelyo:permissions-requester:latest_version'
+        implementation 'com.github.bishoybasily:permissions-requester:latest_version'
         // other depndns
     }
 

@@ -1,11 +1,11 @@
-package com.fidelyo.sample
+package com.gmail.bishoybasily.sample
 
 import android.Manifest
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.fidelyo.permissionsrequester.PermissionsRequester
+import androidx.appcompat.app.AppCompatActivity
+import com.gmail.bishoybasily.permissionsrequester.PermissionsRequester
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

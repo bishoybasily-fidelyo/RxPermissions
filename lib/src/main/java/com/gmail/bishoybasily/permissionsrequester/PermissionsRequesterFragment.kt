@@ -1,4 +1,4 @@
-package com.fidelyo.permissionsrequester
+package com.gmail.bishoybasily.permissionsrequester
 
 import android.annotation.TargetApi
 import android.app.Fragment

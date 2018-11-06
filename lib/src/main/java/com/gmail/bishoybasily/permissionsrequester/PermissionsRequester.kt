@@ -1,4 +1,4 @@
-package com.fidelyo.permissionsrequester
+package com.gmail.bishoybasily.permissionsrequester
 
 import android.app.Activity
 import android.app.AlertDialog
