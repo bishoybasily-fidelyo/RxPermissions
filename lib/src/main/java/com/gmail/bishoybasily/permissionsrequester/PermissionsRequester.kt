@@ -1,11 +1,12 @@
 package com.gmail.bishoybasily.permissionsrequester
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.fragment.app.FragmentActivity
 import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 
 class PermissionsRequester {
 
@@ -13,7 +14,7 @@ class PermissionsRequester {
         return Handler(context)
     }
 
-    fun with(activity: Activity): ActivityHandler {
+    fun with(activity: FragmentActivity): ActivityHandler {
         return ActivityHandler(activity)
     }
 
@@ -35,7 +36,7 @@ class PermissionsRequester {
 
     }
 
-    open class ActivityHandler(val activity: Activity) : Handler(activity) {
+    open class ActivityHandler(val activity: FragmentActivity) : Handler(activity) {
 
         val TAG = javaClass.simpleName
 
@@ -49,17 +50,17 @@ class PermissionsRequester {
         open fun request(permissions: Array<String>): Observable<Boolean> {
             val missingPermissions = missingPermissions(permissions)
             return if (missingPermissions.isEmpty()) {
-                Observable.just(true)
+                Observable.error(Throwable("No permissions to request"))
             } else {
-                Observable.create { getFragment(activity).setEmitter(it).request(missingPermissions, CODE) }
+                Observable.create { getFragment(activity, it).request(missingPermissions, CODE) }
             }
         }
 
-        fun getFragment(activity: Activity): PermissionsRequesterFragment {
-            val fragmentManager = activity.fragmentManager
+        protected fun getFragment(activity: FragmentActivity, emitter: ObservableEmitter<Boolean>): PermissionsRequesterFragment {
+            val fragmentManager = activity.supportFragmentManager
             var fragment = fragmentManager.findFragmentByTag(TAG)
             if (fragment == null) {
-                fragment = PermissionsRequesterFragment()
+                fragment = PermissionsRequesterFragment(emitter)
                 fragmentManager
                         .beginTransaction()
                         .add(fragment, TAG)
@@ -71,7 +72,7 @@ class PermissionsRequester {
 
     }
 
-    open class ExplainedActivityHandler(activity: Activity,
+    open class ExplainedActivityHandler(activity: FragmentActivity,
                                         val title: Int,
                                         val message: Int,
                                         val positive: Int,
@@ -88,7 +89,7 @@ class PermissionsRequester {
                             .setMessage(message)
                             .setPositiveButton(positive) { dialog, _ ->
                                 dialog.dismiss()
-                                getFragment(activity).setEmitter(it).request(missingPermissions, CODE)
+                                getFragment(activity, it).request(missingPermissions, CODE)
                             }
                             .setNegativeButton(negative) { dialog, _ ->
                                 dialog.dismiss()

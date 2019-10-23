@@ -1,24 +1,17 @@
 package com.gmail.bishoybasily.permissionsrequester
 
 import android.annotation.TargetApi
-import android.app.Fragment
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import io.reactivex.ObservableEmitter
 
-class PermissionsRequesterFragment : Fragment() {
-
-    private var emitter: ObservableEmitter<Boolean>? = null
+class PermissionsRequesterFragment(val emitter: ObservableEmitter<Boolean>) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-    }
-
-    fun setEmitter(emitter: ObservableEmitter<Boolean>): PermissionsRequesterFragment {
-        this.emitter = emitter
-        return this
     }
 
 
@@ -32,16 +25,9 @@ class PermissionsRequesterFragment : Fragment() {
 
         if (requestCode != PermissionsRequester.CODE) return
 
-        emitter?.onNext(checkResults(grantResults))
-        emitter?.onComplete()
-
-    }
-
-    private fun checkResults(grantResults: IntArray): Boolean {
-        for (re in grantResults)
-            if (re != PackageManager.PERMISSION_GRANTED)
-                return false
-        return true
+        for (result in grantResults)
+            emitter.onNext(result == PackageManager.PERMISSION_GRANTED)
+        emitter.onComplete()
     }
 
 
