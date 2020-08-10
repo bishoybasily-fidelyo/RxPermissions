@@ -42,7 +42,9 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener { view ->
 
             // to ensure that the permission is granted without requesting
-            requester.ensure(needed)
+            requester
+                    .explain(R.string.title, R.string.message, R.string.allow, R.string.deny)
+                    .request(needed)
                     .subscribe({
                         Log.i("##", Arrays.toString(it))
                         var res = true

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.fragment.app.FragmentActivity
 import io.reactivex.Single
-import io.reactivex.SingleEmitter
 
 class PermissionsRequester {
 
@@ -24,10 +23,6 @@ class PermissionsRequester {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED
             else false
-        }
-
-        protected fun missingPermissions(permissions: Array<String>): Array<String> {
-            return permissions.filter { isMissing(context, it) }.toTypedArray()
         }
 
         fun ensure(permissions: Array<String>): Single<Array<Boolean>> {
@@ -50,14 +45,14 @@ class PermissionsRequester {
 
         open fun request(permissions: Array<String>): Single<Array<Boolean>> {
             return if (permissions.isEmpty()) Single.error(Throwable("No permissions to request"))
-            else Single.create { getFragment(activity, it).request(missingPermissions(permissions), CODE) }
+            else Single.create { getFragment(activity).request(it, permissions, CODE) }
         }
 
-        protected fun getFragment(activity: FragmentActivity, emitter: SingleEmitter<Array<Boolean>>): PermissionsRequesterFragment {
+        protected fun getFragment(activity: FragmentActivity): PermissionsRequesterFragment {
             val fragmentManager = activity.supportFragmentManager
             var fragment = fragmentManager.findFragmentByTag(TAG)
             if (fragment == null) {
-                fragment = PermissionsRequesterFragment(emitter)
+                fragment = PermissionsRequesterFragment()
                 fragmentManager
                         .beginTransaction()
                         .add(fragment, TAG)
@@ -76,23 +71,28 @@ class PermissionsRequester {
                                         val negative: Int) : ActivityHandler(activity) {
 
         override fun request(permissions: Array<String>): Single<Array<Boolean>> {
-            val missingPermissions = missingPermissions(permissions)
-            return if (missingPermissions.isEmpty()) Single.just(arrayOf(true))
-            else return Single.create {
-                AlertDialog.Builder(activity)
-                        .setTitle(title)
-                        .setMessage(message)
-                        .setPositiveButton(positive) { dialog, _ ->
-                            dialog.dismiss()
-                            getFragment(activity, it).request(missingPermissions, CODE)
+            return if (permissions.isEmpty()) Single.error(Throwable("No permissions to request"))
+            else return ensure(permissions)
+                    .flatMap { results ->
+                        var hasMissing = false
+                        results.forEach { if (!it) hasMissing = true }
+                        return@flatMap if (hasMissing) Single.create<Array<Boolean>> {
+                            AlertDialog.Builder(activity)
+                                    .setTitle(title)
+                                    .setMessage(message)
+                                    .setPositiveButton(positive) { dialog, _ ->
+                                        dialog.dismiss()
+                                        getFragment(activity).request(it, permissions, CODE)
+                                    }
+                                    .setNegativeButton(negative) { dialog, _ ->
+                                        dialog.dismiss()
+                                        it.onSuccess(results)
+                                    }
+                                    .create()
+                                    .show()
                         }
-                        .setNegativeButton(negative) { dialog, _ ->
-                            dialog.dismiss()
-                            it.onSuccess(arrayOf(false))
-                        }
-                        .create()
-                        .show()
-            }
+                        else super.request(permissions)
+                    }
         }
 
     }

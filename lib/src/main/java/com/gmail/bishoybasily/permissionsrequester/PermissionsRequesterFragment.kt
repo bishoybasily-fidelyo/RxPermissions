@@ -7,7 +7,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import io.reactivex.SingleEmitter
 
-class PermissionsRequesterFragment(val emitter: SingleEmitter<Array<Boolean>>) : Fragment() {
+class PermissionsRequesterFragment : Fragment() {
+
+    lateinit var emitter: SingleEmitter<Array<Boolean>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,7 +17,8 @@ class PermissionsRequesterFragment(val emitter: SingleEmitter<Array<Boolean>>) :
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    fun request(permissions: Array<String>, requestCode: Int) {
+    fun request(emitter: SingleEmitter<Array<Boolean>>, permissions: Array<String>, requestCode: Int) {
+        this.emitter = emitter
         requestPermissions(permissions, requestCode)
     }
 
